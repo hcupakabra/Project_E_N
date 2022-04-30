@@ -22,15 +22,16 @@ def start(update: Update, context: CallbackContext):
     update.message.reply_text("Привет, я Телеграм-бот."
                               " Твой личный репетитор по обществу."
                               "Давайте начнем")
+    update.message.reply_text("Прежде чем вы начнёте работать ознакомьтесь с правиламиn\n"
+                              "За каждый правильный ответ вам будут начисляться баллы\n"
+                              "при неправильном ответе вам не начисляются баллы\n"
+                              "не пытайтесь писать число больше номера последнего варианта ответа(4)\n"
+                              "Оценка выставляется по колличеству баллов:\n"
+                              "Оценка 3: 3 балла и меньше\n"
+                              "Оценка 4: 4 балла\n"
+                              "Оценка 5: пать баллов\n")
     update.message.reply_text("напишите год, в котором вы хотели бы взять пробник:")
     return 1
-
-
-def end(update: Update, context: CallbackContext) -> int:
-    query = update.callback_query
-    query.answer()
-    query.edit_message_text(text="See you next time!")
-    return ConversationHandler.END
 
 
 def stop():
@@ -43,9 +44,8 @@ def main():
     conv_handler = ConversationHandler(
         entry_points=[CommandHandler('start', start)],
         states={
-            1: [MessageHandler(Filters.text & ~Filters.command, Question.year)],
+            1: [MessageHandler(Filters.text & ~Filters.command, Bot.get_year)],
             2: [MessageHandler(Filters.text & ~Filters.command, Question.answer)],
-            3: [MessageHandler(Filters.text & ~Filters.command, Question.answer)]
         }, fallbacks=[CommandHandler('stop', stop)])
     dp.add_handler(conv_handler)
     updater.start_polling()
