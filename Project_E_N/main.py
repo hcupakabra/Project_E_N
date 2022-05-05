@@ -8,40 +8,35 @@ cur.execute("SELECT * FROM society")
 one_result = cur.fetchone()
 
 
-class Question():
+class Question(Bot):
+    def ask_a_question(update, context):
+        if Bot.num_quest != 5:
+            text = update.message.text
+            context.user_data['text'] = update.message.text
+            if context.user_data['text'] == Bot.answer[Bot.otvet]:
+                update.message.reply_text(one_result[Bot.num_quest])
+                Bot.scores += 1
+                Bot.otvet += 1
+                Bot.num_quest += 1
+                return 2
+            else:
+                update.message.reply_text(one_result[Bot.num_quest])
+                Bot.attempt += 1
+                Bot.otvet += 1
+                Bot.num_quest += 1
+                return 2
+        if Bot.num_quest == 5:
+            Bot.scores += 1
+            Ending.checking_the_ends(update, context)
+
+
+class Bot():
     num_quest = 1
     otvet = 1
     scores = 0
     attempt = 0
     update = Update
     context = CallbackContext
-
-    def ask_a_question(update, context):
-        if Question.num_quest != 5:
-            text = update.message.text
-            context.user_data['text'] = update.message.text
-            if context.user_data['text'] == Bot.answer[Question.otvet]:
-                update.message.reply_text("Правильно, следующее задание")
-                update.message.reply_text(one_result[Question.num_quest])
-                if Question.attempt == 0:
-                    Question.scores += 1
-                    Question.otvet += 1
-                    Question.num_quest += 1
-                    return 2
-                elif Question.attempt != 0:
-                    Question.otvet += 1
-                    Question.num_quest += 1
-                    Question.scores = Question.scores
-                    return 2
-            else:
-                update.message.reply_text("Не правильно, попробуй ещё раз")
-                Question.attempt += 1
-                print(Question.attempt)
-        if Question.num_quest == 5:
-            Ending.checking_the_ends(update, context)
-
-
-class Bot():
     answer = {
         1: "4",
         2: "2",
@@ -62,11 +57,17 @@ class Bot():
             update.message.reply_text("Такого года пока нет, выбери другой")
 
 
-class Ending():
+class Ending(Bot):
     def checking_the_ends(update, context):
-        if Question.scores <= 2:
+        if Bot.scores <= 3:
+            print(Bot.attempt)
+            update.message.reply_text(f"ошибок: {Bot.attempt}")
             update.message.reply_text("Нормально, оценка 3")
-        if Question.scores == 3:
+        if Bot.scores == 4:
+            print(Bot.attempt)
+            update.message.reply_text(f"ошибок: {Bot.attempt}")
             update.message.reply_text("Хорошо, оценка 4")
-        if Question.scores == 4:
+        if Bot.scores == 5:
+            print(Bot.attempt)
+            update.message.reply_text(f"ошибок: {Bot.attempt}")
             update.message.reply_text("Отлично! Оценка 5!")

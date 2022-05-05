@@ -33,7 +33,7 @@ def stop():
 
 
 def main():
-    updater = Updater('5319178029:AAHAWCy4ecGfQoXNh5v7YG2M7DWKow69WhA')
+    updater = Updater('5319178029:AAE_1NA0HviCrZE06xGjPVPDglkPKw2fJEY')
     dp = updater.dispatcher
     conv_handler = ConversationHandler(
         entry_points=[CommandHandler('start', start)],
